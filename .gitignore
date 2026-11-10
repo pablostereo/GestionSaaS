@@ -1,0 +1,7 @@
+# Base de pruebas local (SQLite)
+GestionSaaS.Api/Datos/
+bin/
+obj/
+.vs/
+node_modules/
+dist/

@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "Nuevo perfil",
+    "Projects": [
+      {
+        "Path": "GestionSaaS.Api\\GestionSaaS.Api.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "GestionSaaS.View\\GestionSaaS.View.esproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
