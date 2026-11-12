@@ -21,8 +21,10 @@ public class AppDbContext : DbContext
     public DbSet<Producto> Productos => Set<Producto>();
     public DbSet<Venta> Ventas => Set<Venta>();
     public DbSet<DetalleVenta> DetallesVenta => Set<DetalleVenta>();
+    public DbSet<Proveedor> Proveedores => Set<Proveedor>();
     public DbSet<Compra> Compras => Set<Compra>();
     public DbSet<DetalleCompra> DetallesCompra => Set<DetalleCompra>();
+    public DbSet<Gasto> Gastos => Set<Gasto>();
 
     // Todas las fechas se guardan en UTC y se leen marcadas como UTC
     // (SQLite y SQL Server no guardan el "Kind" del DateTime)
@@ -124,14 +126,31 @@ public class AppDbContext : DbContext
             e.HasQueryFilter(x => x.Venta.ClienteId == ClienteId);
         });
 
-        // ---------- Compra ----------
+        // ---------- Proveedor ----------
+        modelBuilder.Entity<Proveedor>(e =>
+        {
+            e.ToTable("Proveedores");
+
+            e.HasOne(x => x.Cliente)
+             .WithMany(c => c.Proveedores)
+             .HasForeignKey(x => x.ClienteId)
+             .OnDelete(DeleteBehavior.Restrict);
+
+            // Nombre único por cliente
+            e.HasIndex(x => new { x.ClienteId, x.Nombre }).IsUnique();
+
+            e.HasQueryFilter(x => x.ClienteId == ClienteId);
+        });
+
+        // ---------- Compra (reposición de mercadería) ----------
         modelBuilder.Entity<Compra>(e =>
         {
             e.ToTable("Compras");
 
-            e.Property(x => x.Tipo)
-             .HasConversion<string>()
-             .HasMaxLength(30);
+            e.HasOne(x => x.Proveedor)
+             .WithMany(p => p.Compras)
+             .HasForeignKey(x => x.ProveedorId)
+             .OnDelete(DeleteBehavior.Restrict);  // no se borra un proveedor con compras
 
             e.HasOne(x => x.Cliente)
              .WithMany(c => c.Compras)
@@ -162,6 +181,29 @@ public class AppDbContext : DbContext
 
             // Hereda el cliente desde la cabecera de la compra
             e.HasQueryFilter(x => x.Compra.ClienteId == ClienteId);
+        });
+
+        // ---------- Gasto (egreso operativo, no toca stock) ----------
+        modelBuilder.Entity<Gasto>(e =>
+        {
+            e.ToTable("Gastos");
+
+            e.Property(x => x.Categoria)
+             .HasConversion<string>()
+             .HasMaxLength(30);
+
+            e.Property(x => x.MedioPago)
+             .HasConversion<string>()
+             .HasMaxLength(30);
+
+            e.HasOne(x => x.Cliente)
+             .WithMany(c => c.Gastos)
+             .HasForeignKey(x => x.ClienteId)
+             .OnDelete(DeleteBehavior.Restrict);
+
+            e.HasIndex(x => new { x.ClienteId, x.Fecha });
+
+            e.HasQueryFilter(x => x.ClienteId == ClienteId);
         });
     }
 

@@ -11,19 +11,20 @@ export default function Inicio({ irA }) {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    Promise.all([api.ventas(), api.compras(), api.productos()])
-      .then(([ventas, compras, productos]) => setDatos({ ventas, compras, productos }))
+    Promise.all([api.ventas(), api.compras(), api.gastos(), api.productos()])
+      .then(([ventas, compras, gastos, productos]) => setDatos({ ventas, compras, gastos, productos }))
       .catch((e) => setError(e.message))
   }, [])
 
   if (error) return <div className="alerta alerta-error">{error}</div>
   if (!datos) return <Cargando />
 
-  const { ventas, compras, productos } = datos
+  const { ventas, compras, gastos, productos } = datos
   const mes = inicioDelMes(), hoy = inicioDelDia()
   const ventasHoy = ventas.filter((v) => new Date(v.fecha) >= hoy)
   const ventasMes = ventas.filter((v) => new Date(v.fecha) >= mes)
   const comprasMes = compras.filter((c) => new Date(c.fecha) >= mes)
+  const gastosMes = gastos.filter((g) => new Date(g.fecha) >= mes)
   const stockBajo = productos.filter((p) => p.stockBajo)
   const suma = (lista, campo) => lista.reduce((s, x) => s + x[campo], 0)
 
@@ -37,6 +38,7 @@ export default function Inicio({ irA }) {
         <Indicador titulo="Vendido hoy" valor={pesos(suma(ventasHoy, 'totalVenta'))} detalle={`${ventasHoy.length} ${ventasHoy.length === 1 ? "venta" : "ventas"}`} icono="venta" tono="verde" />
         <Indicador titulo="Vendido en el mes" valor={pesos(suma(ventasMes, 'totalVenta'))} detalle={`${ventasMes.length} ${ventasMes.length === 1 ? "venta" : "ventas"}`} icono="ventas" />
         <Indicador titulo="Compras del mes" valor={pesos(suma(comprasMes, 'montoTotal'))} detalle={`${comprasMes.length} ${comprasMes.length === 1 ? "compra" : "compras"}`} icono="compras" tono="violeta" />
+        <Indicador titulo="Gastos del mes" valor={pesos(suma(gastosMes, 'monto'))} detalle={`${gastosMes.length} ${gastosMes.length === 1 ? "gasto" : "gastos"}`} icono="gastos" tono="rojo" />
         <Indicador titulo="Stock bajo" valor={stockBajo.length} detalle={`de ${productos.length} productos`} icono="alerta" tono={stockBajo.length ? 'rojo' : 'verde'} />
       </div>
 

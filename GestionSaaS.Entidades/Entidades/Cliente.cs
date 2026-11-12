@@ -19,5 +19,7 @@ public class Cliente
     public ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
     public ICollection<Producto> Productos { get; set; } = new List<Producto>();
     public ICollection<Venta> Ventas { get; set; } = new List<Venta>();
+    public ICollection<Proveedor> Proveedores { get; set; } = new List<Proveedor>();
     public ICollection<Compra> Compras { get; set; } = new List<Compra>();
+    public ICollection<Gasto> Gastos { get; set; } = new List<Gasto>();
 }

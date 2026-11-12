@@ -12,6 +12,8 @@ import Productos from './paginas/cliente/Productos.jsx'
 import NuevaVenta from './paginas/cliente/NuevaVenta.jsx'
 import Ventas from './paginas/cliente/Ventas.jsx'
 import Compras from './paginas/cliente/Compras.jsx'
+import Gastos from './paginas/cliente/Gastos.jsx'
+import Proveedores from './paginas/cliente/Proveedores.jsx'
 
 const MENU_ADMIN = {
   panel: { titulo: 'Panel', icono: 'panel', Pagina: Panel },
@@ -23,7 +25,9 @@ const MENU_CLIENTE = {
   nuevaVenta: { titulo: 'Nueva venta', icono: 'venta', Pagina: NuevaVenta },
   productos: { titulo: 'Productos', icono: 'productos', Pagina: Productos },
   ventas: { titulo: 'Ventas', icono: 'ventas', Pagina: Ventas },
-  compras: { titulo: 'Compras', icono: 'compras', Pagina: Compras }
+  compras: { titulo: 'Compras', icono: 'compras', Pagina: Compras },
+  gastos: { titulo: 'Gastos', icono: 'gastos', Pagina: Gastos },
+  proveedores: { titulo: 'Proveedores', icono: 'proveedores', Pagina: Proveedores }
 }
 
 export default function App() {

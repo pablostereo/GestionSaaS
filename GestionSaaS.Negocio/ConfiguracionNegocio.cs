@@ -17,7 +17,9 @@ public static class ConfiguracionNegocio
         services.AddScoped<ClienteServicio>();
         services.AddScoped<ProductoServicio>();
         services.AddScoped<VentaServicio>();
+        services.AddScoped<ProveedorServicio>();
         services.AddScoped<CompraServicio>();
+        services.AddScoped<GastoServicio>();
 
         return services;
     }

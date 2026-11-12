@@ -44,6 +44,17 @@ Al arrancar con una base vacía se crean estos usuarios:
 
 La pantalla de login tiene botones para completar estos usuarios.
 
+## Circuitos del cliente
+
+| Pantalla        | Para qué                                                   | Toca stock |
+|-----------------|------------------------------------------------------------|------------|
+| **Compras**     | Reposición de mercadería: proveedor + productos (cantidad y costo). Suma stock y actualiza el costo de cada producto. | Sí |
+| **Gastos**      | Egresos operativos (luz, alquiler, impuestos…): descripción, monto, fecha, categoría y medio de pago. Solo registra la salida de dinero. | No |
+| **Proveedores** | A quién se le compra. No se borran: se desactivan (un inactivo no aparece al cargar compras). | No |
+
+El SKU de los productos lo asigna el sistema: es correlativo por cliente (`000001`, `000002`…) y no se edita.
+Dos clientes distintos pueden tener el mismo número, pero dentro de un cliente nunca se repite.
+
 ## Seguridad
 
 - Login en `POST /api/auth/login` → devuelve un token JWT (8 horas).

@@ -46,10 +46,14 @@ public static class DatosDemo
         });
 
         db.Productos.AddRange(
-            new Producto { ClienteId = id, CodigoSku = "ALM-001", Nombre = "Yerba 1kg",       PrecioVenta = 4500, CostoActual = 3200, StockActual = 40, StockMinimo = 10 },
-            new Producto { ClienteId = id, CodigoSku = "ALM-002", Nombre = "Azúcar 1kg",      PrecioVenta = 1500, CostoActual = 1000, StockActual = 8,  StockMinimo = 10 },
-            new Producto { ClienteId = id, CodigoSku = "BEB-001", Nombre = "Gaseosa 2.25L",   PrecioVenta = 2800, CostoActual = 1900, StockActual = 24, StockMinimo = 6 },
-            new Producto { ClienteId = id, CodigoSku = "LIM-001", Nombre = "Lavandina 1L",    PrecioVenta = 1200, CostoActual = 750,  StockActual = 15, StockMinimo = 5 });
+            new Producto { ClienteId = id, CodigoSku = "000001", Nombre = "Yerba 1kg",       PrecioVenta = 4500, CostoActual = 3200, StockActual = 40, StockMinimo = 10 },
+            new Producto { ClienteId = id, CodigoSku = "000002", Nombre = "Azúcar 1kg",      PrecioVenta = 1500, CostoActual = 1000, StockActual = 8,  StockMinimo = 10 },
+            new Producto { ClienteId = id, CodigoSku = "000003", Nombre = "Gaseosa 2.25L",   PrecioVenta = 2800, CostoActual = 1900, StockActual = 24, StockMinimo = 6 },
+            new Producto { ClienteId = id, CodigoSku = "000004", Nombre = "Lavandina 1L",    PrecioVenta = 1200, CostoActual = 750,  StockActual = 15, StockMinimo = 5 });
+
+        db.Proveedores.AddRange(
+            new Proveedor { ClienteId = id, Nombre = "Distribuidora Norte", Cuit = "30-71234567-8", Telefono = "11 4555-1234" },
+            new Proveedor { ClienteId = id, Nombre = "Mayorista Sur",       Telefono = "11 4777-9876", Email = "ventas@mayoristasur.local" });
 
         await db.SaveChangesAsync();
     }

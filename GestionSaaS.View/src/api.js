@@ -72,8 +72,16 @@ export const api = {
   eliminarProducto: (id) => pedir('DELETE', `/productos/${id}`),
   ventas: (filtros = {}) => pedir('GET', `/ventas${qs(filtros)}`),
   registrarVenta: (v) => pedir('POST', '/ventas', v),
+  proveedores: (filtros = {}) => pedir('GET', `/proveedores${qs(filtros)}`),
+  crearProveedor: (p) => pedir('POST', '/proveedores', p),
+  actualizarProveedor: (id, p) => pedir('PUT', `/proveedores/${id}`, p),
+  cambiarEstadoProveedor: (id, activo) => pedir('PUT', `/proveedores/${id}/activo?valor=${activo}`),
   compras: (filtros = {}) => pedir('GET', `/compras${qs(filtros)}`),
-  registrarCompra: (c) => pedir('POST', '/compras', c)
+  registrarCompra: (c) => pedir('POST', '/compras', c),
+  gastos: (filtros = {}) => pedir('GET', `/gastos${qs(filtros)}`),
+  registrarGasto: (g) => pedir('POST', '/gastos', g),
+  actualizarGasto: (id, g) => pedir('PUT', `/gastos/${id}`, g),
+  eliminarGasto: (id) => pedir('DELETE', `/gastos/${id}`)
 }
 
 // --- Constantes y formatos ---
@@ -81,7 +89,10 @@ export const MEDIOS_PAGO = {
   Efectivo: 'Efectivo', TarjetaDebito: 'Tarjeta débito', TarjetaCredito: 'Tarjeta crédito',
   Transferencia: 'Transferencia', MercadoPago: 'Mercado Pago', CuentaCorriente: 'Cuenta corriente'
 }
-export const TIPOS_COMPRA = { Mercaderia: 'Mercadería', Gasto: 'Gasto', Servicio: 'Servicio', Otro: 'Otro' }
+export const CATEGORIAS_GASTO = {
+  Alquiler: 'Alquiler', Luz: 'Luz', Gas: 'Gas', Agua: 'Agua', Internet: 'Internet', Telefonia: 'Telefonía',
+  Impuestos: 'Impuestos', Sueldos: 'Sueldos', Servicios: 'Servicios', Mantenimiento: 'Mantenimiento', Otros: 'Otros'
+}
 
 export const pesos = (n) => Number(n ?? 0).toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })
 export const numero = (n) => Number(n ?? 0).toLocaleString('es-AR', { maximumFractionDigits: 3 })

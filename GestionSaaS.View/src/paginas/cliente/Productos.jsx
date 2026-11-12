@@ -94,7 +94,7 @@ export default function Productos() {
 function FormularioProducto({ producto, onCerrar, onGuardado }) {
   const esNuevo = !producto.id
   const [form, setForm] = useState({
-    codigoSku: producto.codigoSku ?? '', nombre: producto.nombre ?? '',
+    nombre: producto.nombre ?? '',
     precioVenta: producto.precioVenta ?? '', costoActual: producto.costoActual ?? '',
     stockMinimo: producto.stockMinimo ?? '', stockInicial: ''
   })
@@ -105,14 +105,13 @@ function FormularioProducto({ producto, onCerrar, onGuardado }) {
     e.preventDefault()
     setError('')
     const datos = {
-      codigoSku: form.codigoSku, nombre: form.nombre,
+      nombre: form.nombre,
       precioVenta: +form.precioVenta, costoActual: +form.costoActual,
       stockMinimo: +form.stockMinimo, stockInicial: +form.stockInicial || 0
     }
     try {
-      if (esNuevo) await api.crearProducto(datos)
-      else await api.actualizarProducto(producto.id, datos)
-      onGuardado(esNuevo ? 'Producto creado' : 'Producto actualizado')
+      const guardado = esNuevo ? await api.crearProducto(datos) : await api.actualizarProducto(producto.id, datos)
+      onGuardado(esNuevo ? `Producto creado con SKU ${guardado.codigoSku}` : 'Producto actualizado')
     } catch (err) { setError(err.message) }
   }
 
@@ -121,8 +120,10 @@ function FormularioProducto({ producto, onCerrar, onGuardado }) {
       <form onSubmit={guardar} className="formulario">
         {error && <div className="alerta alerta-error">{error}</div>}
         <div className="grilla-2">
-          <Campo etiqueta="SKU"><input value={form.codigoSku} onChange={cambiar('codigoSku')} required maxLength={50} autoFocus /></Campo>
-          <Campo etiqueta="Nombre"><input value={form.nombre} onChange={cambiar('nombre')} required maxLength={200} /></Campo>
+          <Campo etiqueta="SKU" ayuda={esNuevo ? 'Se asigna automáticamente al guardar.' : 'Asignado por el sistema.'}>
+            <input value={esNuevo ? 'Automático' : producto.codigoSku} disabled />
+          </Campo>
+          <Campo etiqueta="Nombre"><input value={form.nombre} onChange={cambiar('nombre')} required maxLength={200} autoFocus /></Campo>
           <Campo etiqueta="Precio de venta"><input type="number" step="0.01" min="0" value={form.precioVenta} onChange={cambiar('precioVenta')} required /></Campo>
           <Campo etiqueta="Costo"><input type="number" step="0.01" min="0" value={form.costoActual} onChange={cambiar('costoActual')} required /></Campo>
           <Campo etiqueta="Stock mínimo" ayuda="Debajo de esto se marca para reponer.">

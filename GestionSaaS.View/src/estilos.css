@@ -170,7 +170,7 @@ main { padding: 28px 32px 48px; max-width: 1240px; }
 
 .columnas { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; }
 
-.indicadores { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 18px; }
+.indicadores { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 18px; }
 .indicador {
   display: flex; gap: 14px; align-items: center;
   background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio);

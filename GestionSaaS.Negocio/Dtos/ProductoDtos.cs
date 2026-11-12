@@ -1,7 +1,6 @@
 namespace GestionSaaS.Negocio.Dtos;
 
-public record ProductoGuardarDto(
-    string CodigoSku,
+public record ProductoGuardarDto(   // el SKU no se recibe: lo genera el sistema
     string Nombre,
     decimal PrecioVenta,
     decimal CostoActual,

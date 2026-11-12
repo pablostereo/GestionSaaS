@@ -38,23 +38,32 @@ public class ProductoServicio(AppDbContext db, IClienteActual clienteActual)
         if (dto.StockInicial < 0)
             throw new NegocioException("El stock inicial no puede ser negativo.");
 
-        var sku = dto.CodigoSku.Trim().ToUpperInvariant();
-        if (await Db.Productos.AnyAsync(p => p.CodigoSku == sku, ct))
-            throw new NegocioException($"Ya existe un producto con SKU {sku}.");
-
         var producto = new Producto
         {
-            CodigoSku = sku,
             Nombre = dto.Nombre.Trim(),
             PrecioVenta = dto.PrecioVenta,
             CostoActual = dto.CostoActual,
             StockMinimo = dto.StockMinimo,
             StockActual = dto.StockInicial
         };
-
         Db.Productos.Add(producto);
-        await Db.SaveChangesAsync(ct);
-        return ADto(producto);
+
+        // SKU automático y correlativo por cliente. Si dos altas simultáneas toman el mismo
+        // número, el índice único (ClienteId, CodigoSku) rechaza una y se reintenta con el siguiente.
+        for (var intento = 1; ; intento++)
+        {
+            producto.CodigoSku = await SiguienteSkuAsync(ct);
+            try
+            {
+                await Db.SaveChangesAsync(ct);
+                return ADto(producto);
+            }
+            catch (DbUpdateException) when (intento < MaxIntentosSku)
+            {
+                Db.Entry(producto).State = EntityState.Detached;
+                Db.Productos.Add(producto);
+            }
+        }
     }
 
     public async Task<ProductoDto> ActualizarAsync(int id, ProductoGuardarDto dto, CancellationToken ct = default)
@@ -62,13 +71,7 @@ public class ProductoServicio(AppDbContext db, IClienteActual clienteActual)
         await ValidarClienteAsync(ct);
         Validar(dto);
 
-        var producto = await BuscarAsync(id, ct);
-        var sku = dto.CodigoSku.Trim().ToUpperInvariant();
-
-        if (await Db.Productos.AnyAsync(p => p.CodigoSku == sku && p.Id != id, ct))
-            throw new NegocioException($"Ya existe otro producto con SKU {sku}.");
-
-        producto.CodigoSku = sku;
+        var producto = await BuscarAsync(id, ct);   // el SKU no se modifica
         producto.Nombre = dto.Nombre.Trim();
         producto.PrecioVenta = dto.PrecioVenta;
         producto.CostoActual = dto.CostoActual;
@@ -121,13 +124,31 @@ public class ProductoServicio(AppDbContext db, IClienteActual clienteActual)
 
     // ---------- privados ----------
 
+    private const int LargoSku = 6;
+    private const int MaxIntentosSku = 3;
+
+    /// <summary>Próximo SKU del cliente actual: 000001, 000002… Ignora códigos con otro formato.</summary>
+    private async Task<string> SiguienteSkuAsync(CancellationToken ct)
+    {
+        var existentes = await Db.Productos
+            .Where(p => p.CodigoSku.Length == LargoSku)
+            .Select(p => p.CodigoSku)
+            .ToListAsync(ct);
+
+        var ultimo = existentes
+            .Select(s => int.TryParse(s, out var n) ? n : 0)
+            .DefaultIfEmpty(0)
+            .Max();
+
+        return (ultimo + 1).ToString($"D{LargoSku}");
+    }
+
     private async Task<Producto> BuscarAsync(int id, CancellationToken ct) =>
         await Db.Productos.FirstOrDefaultAsync(p => p.Id == id, ct)
         ?? throw new NoEncontradoException($"Producto {id} no encontrado.");
 
     private static void Validar(ProductoGuardarDto dto)
     {
-        if (string.IsNullOrWhiteSpace(dto.CodigoSku)) throw new NegocioException("El SKU es obligatorio.");
         if (string.IsNullOrWhiteSpace(dto.Nombre))    throw new NegocioException("El nombre es obligatorio.");
         if (dto.PrecioVenta < 0)  throw new NegocioException("El precio de venta no puede ser negativo.");
         if (dto.CostoActual < 0)  throw new NegocioException("El costo no puede ser negativo.");

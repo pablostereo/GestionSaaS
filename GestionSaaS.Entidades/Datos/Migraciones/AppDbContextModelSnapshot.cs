@@ -63,22 +63,26 @@ namespace GestionSaaS.Entidades.Datos.Migraciones
                     b.Property<Guid>("ClienteId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Descripcion")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("MontoTotal")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Tipo")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                    b.Property<string>("NumeroComprobante")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Observaciones")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("ProveedorId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProveedorId");
 
                     b.HasIndex("ClienteId", "Fecha");
 
@@ -149,6 +153,45 @@ namespace GestionSaaS.Entidades.Datos.Migraciones
                     b.ToTable("DetallesVenta", (string)null);
                 });
 
+            modelBuilder.Entity("GestionSaaS.Entidades.Gasto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Categoria")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<Guid>("ClienteId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MedioPago")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<decimal>("Monto")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClienteId", "Fecha");
+
+                    b.ToTable("Gastos", (string)null);
+                });
+
             modelBuilder.Entity("GestionSaaS.Entidades.Producto", b =>
                 {
                     b.Property<int>("Id")
@@ -198,6 +241,95 @@ namespace GestionSaaS.Entidades.Datos.Migraciones
                     b.ToTable("Productos", (string)null);
                 });
 
+            modelBuilder.Entity("GestionSaaS.Entidades.Proveedor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Activo")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("ClienteId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Cuit")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Telefono")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClienteId", "Nombre")
+                        .IsUnique();
+
+                    b.ToTable("Proveedores", (string)null);
+                });
+
+            modelBuilder.Entity("GestionSaaS.Entidades.Usuario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Activo")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("ClienteId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ContrasenaHash")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime>("FechaAlta")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Rol")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime?>("UltimoIngreso")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("Usuarios", (string)null);
+                });
+
             modelBuilder.Entity("GestionSaaS.Entidades.Venta", b =>
                 {
                     b.Property<int>("Id")
@@ -235,7 +367,15 @@ namespace GestionSaaS.Entidades.Datos.Migraciones
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("GestionSaaS.Entidades.Proveedor", "Proveedor")
+                        .WithMany("Compras")
+                        .HasForeignKey("ProveedorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Cliente");
+
+                    b.Navigation("Proveedor");
                 });
 
             modelBuilder.Entity("GestionSaaS.Entidades.DetalleCompra", b =>
@@ -276,6 +416,17 @@ namespace GestionSaaS.Entidades.Datos.Migraciones
                     b.Navigation("Venta");
                 });
 
+            modelBuilder.Entity("GestionSaaS.Entidades.Gasto", b =>
+                {
+                    b.HasOne("GestionSaaS.Entidades.Cliente", "Cliente")
+                        .WithMany("Gastos")
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+                });
+
             modelBuilder.Entity("GestionSaaS.Entidades.Producto", b =>
                 {
                     b.HasOne("GestionSaaS.Entidades.Cliente", "Cliente")
@@ -283,6 +434,27 @@ namespace GestionSaaS.Entidades.Datos.Migraciones
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Cliente");
+                });
+
+            modelBuilder.Entity("GestionSaaS.Entidades.Proveedor", b =>
+                {
+                    b.HasOne("GestionSaaS.Entidades.Cliente", "Cliente")
+                        .WithMany("Proveedores")
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+                });
+
+            modelBuilder.Entity("GestionSaaS.Entidades.Usuario", b =>
+                {
+                    b.HasOne("GestionSaaS.Entidades.Cliente", "Cliente")
+                        .WithMany("Usuarios")
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Cliente");
                 });
@@ -302,7 +474,13 @@ namespace GestionSaaS.Entidades.Datos.Migraciones
                 {
                     b.Navigation("Compras");
 
+                    b.Navigation("Gastos");
+
                     b.Navigation("Productos");
+
+                    b.Navigation("Proveedores");
+
+                    b.Navigation("Usuarios");
 
                     b.Navigation("Ventas");
                 });
@@ -317,6 +495,11 @@ namespace GestionSaaS.Entidades.Datos.Migraciones
                     b.Navigation("DetallesCompra");
 
                     b.Navigation("DetallesVenta");
+                });
+
+            modelBuilder.Entity("GestionSaaS.Entidades.Proveedor", b =>
+                {
+                    b.Navigation("Compras");
                 });
 
             modelBuilder.Entity("GestionSaaS.Entidades.Venta", b =>

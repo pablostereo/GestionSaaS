@@ -6,14 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GestionSaaS.Api.Controllers;
 
+/// <summary>Compras de reposición de mercadería (suman stock).</summary>
 [ApiController]
 [Route("api/compras")]
 [Authorize(Roles = Constantes.RolCliente)]
 public class ComprasController(CompraServicio servicio) : ControllerBase
 {
     [HttpGet]
-    public Task<List<CompraDto>> Listar([FromQuery] DateTime? desde, [FromQuery] DateTime? hasta, CancellationToken ct) =>
-        servicio.ListarAsync(desde, hasta, ct);
+    public Task<List<CompraDto>> Listar([FromQuery] DateTime? desde, [FromQuery] DateTime? hasta,
+                                        [FromQuery] int? proveedorId, CancellationToken ct) =>
+        servicio.ListarAsync(desde, hasta, proveedorId, ct);
 
     [HttpGet("{id:int}")]
     public Task<CompraDto> Obtener(int id, CancellationToken ct) => servicio.ObtenerAsync(id, ct);
