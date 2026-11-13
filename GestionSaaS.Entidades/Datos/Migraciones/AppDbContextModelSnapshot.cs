@@ -132,6 +132,9 @@ namespace GestionSaaS.Entidades.Datos.Migraciones
                     b.Property<decimal>("Cantidad")
                         .HasColumnType("decimal(18,3)");
 
+                    b.Property<decimal>("CostoUnitario")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<decimal>("PrecioUnitario")
                         .HasColumnType("decimal(18,2)");
 

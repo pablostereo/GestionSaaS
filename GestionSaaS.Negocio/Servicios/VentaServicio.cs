@@ -11,7 +11,7 @@ public class VentaServicio(AppDbContext db, IClienteActual clienteActual)
     : ServicioBase(db, clienteActual)
 {
     /// <summary>
-    /// Registra una venta: valida stock, congela precios, calcula totales
+    /// Registra una venta: valida stock, congela precio y costo de cada producto, calcula totales
     /// y descuenta stock en una sola transacción.
     /// </summary>
     public async Task<VentaDto> RegistrarAsync(VentaCrearDto dto, CancellationToken ct = default)
@@ -55,6 +55,7 @@ public class VentaServicio(AppDbContext db, IClienteActual clienteActual)
                 ProductoId = producto.Id,
                 Cantidad = item.Cantidad,
                 PrecioUnitario = producto.PrecioVenta,
+                CostoUnitario = producto.CostoActual,   // costo histórico: queda fijo aunque el producto cambie
                 Subtotal = subtotal
             });
 
@@ -105,7 +106,18 @@ public class VentaServicio(AppDbContext db, IClienteActual clienteActual)
     private IQueryable<Venta> Consulta() =>
         Db.Ventas.AsNoTracking().Include(v => v.Detalles).ThenInclude(d => d.Producto);
 
-    private static VentaDto ADto(Venta v) =>
-        new(v.Id, v.Fecha, v.TotalVenta, v.MedioPago,
-            v.Detalles.Select(d => new VentaItemDto(d.ProductoId, d.Producto.Nombre, d.Cantidad, d.PrecioUnitario, d.Subtotal)).ToList());
+    private static VentaDto ADto(Venta v)
+    {
+        var items = v.Detalles
+            .Select(d =>
+            {
+                var costo = Math.Round(d.CostoUnitario * d.Cantidad, 2);
+                return new VentaItemDto(d.ProductoId, d.Producto.Nombre, d.Cantidad, d.PrecioUnitario, d.CostoUnitario,
+                                        d.Subtotal, d.Subtotal - costo);
+            })
+            .ToList();
+
+        var costoTotal = items.Sum(i => i.Subtotal - i.Ganancia);
+        return new(v.Id, v.Fecha, v.TotalVenta, v.MedioPago, costoTotal, v.TotalVenta - costoTotal, items);
+    }
 }

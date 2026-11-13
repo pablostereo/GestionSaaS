@@ -51,6 +51,10 @@ La pantalla de login tiene botones para completar estos usuarios.
 | **Compras**     | Reposición de mercadería: proveedor + productos (cantidad y costo). Suma stock y actualiza el costo de cada producto. | Sí |
 | **Gastos**      | Egresos operativos (luz, alquiler, impuestos…): descripción, monto, fecha, categoría y medio de pago. Solo registra la salida de dinero. | No |
 | **Proveedores** | A quién se le compra. No se borran: se desactivan (un inactivo no aparece al cargar compras). | No |
+| **Estadísticas** | Balance del período (ventas − costo de mercadería vendida − gastos; el costo es el congelado en cada venta), ventas por día de la semana y por franja horaria, top 5 rentables y vendidos, productos con stock sin ventas. `GET /api/estadisticas?desde=&hasta=&utcOffset=` (por defecto: últimos 30 días, UTC-3). | No |
+
+Cada línea de venta guarda el **precio y el costo del producto al momento de vender** (`DetalleVenta.PrecioUnitario` / `CostoUnitario`).
+Si después cambia el costo (por una compra o una edición), las ventas viejas y sus estadísticas no se alteran.
 
 El SKU de los productos lo asigna el sistema: es correlativo por cliente (`000001`, `000002`…) y no se edita.
 Dos clientes distintos pueden tener el mismo número, pero dentro de un cliente nunca se repite.

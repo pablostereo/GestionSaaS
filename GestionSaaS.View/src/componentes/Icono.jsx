@@ -7,6 +7,7 @@ const ICONOS = {
   venta: <><circle cx="9" cy="20" r="1.3" /><circle cx="18" cy="20" r="1.3" /><path d="M2 3h3l2.6 12.2h11.2L21 7H6" /></>,
   ventas: <path d="M6 2h12v20l-3-2-3 2-3-2-3 2zM9 7h6M9 11h6M9 15h4" />,
   compras: <><path d="M1 4h13v11H1zM14 8h4l3 3v4h-7" /><circle cx="5.5" cy="18" r="2" /><circle cx="17.5" cy="18" r="2" /></>,
+  estadisticas: <path d="M3 3v18h18M7 15l4-4 3 3 6-7" />,
   gastos: <><rect x="2" y="6" width="20" height="13" rx="2" /><path d="M2 10h20M6 15h4" /></>,
   proveedores: <path d="M3 21V8l6-4v4l6-4v4l6-4v17zM7 17h2M11 17h2M15 17h2" />,
   salir: <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />,

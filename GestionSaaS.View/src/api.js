@@ -81,7 +81,9 @@ export const api = {
   gastos: (filtros = {}) => pedir('GET', `/gastos${qs(filtros)}`),
   registrarGasto: (g) => pedir('POST', '/gastos', g),
   actualizarGasto: (id, g) => pedir('PUT', `/gastos/${id}`, g),
-  eliminarGasto: (id) => pedir('DELETE', `/gastos/${id}`)
+  eliminarGasto: (id) => pedir('DELETE', `/gastos/${id}`),
+  // utcOffset: el navegador informa su diferencia con UTC para agrupar por día y hora local
+  estadisticas: (filtros = {}) => pedir('GET', `/estadisticas${qs({ ...filtros, utcOffset: -new Date().getTimezoneOffset() })}`)
 }
 
 // --- Constantes y formatos ---

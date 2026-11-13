@@ -15,6 +15,10 @@ public static class Constantes
 
     public const int LargoMinimoContrasena = 6;
 
+    // --- Fechas ---
+    /// <summary>Diferencia con UTC (en minutos) para estadísticas si el navegador no la informa. Argentina: UTC-3.</summary>
+    public const int UtcOffsetMinutosPorDefecto = -180;
+
     // --- Base de datos ---
     /// <summary>Usada por "dotnet ef" al generar migraciones.</summary>
     public const string ConexionDiseno =

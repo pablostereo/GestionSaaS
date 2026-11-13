@@ -8,6 +8,7 @@ import Panel from './paginas/admin/Panel.jsx'
 import Clientes from './paginas/admin/Clientes.jsx'
 // Cliente
 import Inicio from './paginas/cliente/Inicio.jsx'
+import Estadisticas from './paginas/cliente/Estadisticas.jsx'
 import Productos from './paginas/cliente/Productos.jsx'
 import NuevaVenta from './paginas/cliente/NuevaVenta.jsx'
 import Ventas from './paginas/cliente/Ventas.jsx'
@@ -22,6 +23,7 @@ const MENU_ADMIN = {
 
 const MENU_CLIENTE = {
   inicio: { titulo: 'Inicio', icono: 'inicio', Pagina: Inicio },
+  estadisticas: { titulo: 'Estadísticas', icono: 'estadisticas', Pagina: Estadisticas },
   nuevaVenta: { titulo: 'Nueva venta', icono: 'venta', Pagina: NuevaVenta },
   productos: { titulo: 'Productos', icono: 'productos', Pagina: Productos },
   ventas: { titulo: 'Ventas', icono: 'ventas', Pagina: Ventas },
