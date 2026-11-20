@@ -1,11 +1,15 @@
 # GestionSaaS – Stock, Ventas y Compras
 
+Sistema ERP SaaS **multi-tenant** para gestión comercial (inventario transaccional, compras, ventas, egresos operativos y análisis de rentabilidad con trazabilidad de costos históricos). Desarrollado con **C# / .NET 8**, **Entity Framework Core**, **JWT**, **SQLite / SQL Server** y **React + TypeScript**.
+
+<img width="1334" height="929" alt="fcb6f1bb-eb32-4167-995e-c02819eaf9d5" src="https://github.com/user-attachments/assets/6c69adc7-3e6f-431b-af43-37df4c809ed5" />
+
 | Proyecto        | Qué contiene                                                                 |
 |-----------------|------------------------------------------------------------------------------|
 | `GestionSaaS.Entidades` | Entidades, enums, constantes globales (`Comun/Constantes.cs`), `AppDbContext`, migraciones y datos demo (`Datos/`) |
 | `GestionSaaS.Negocio`   | Servicios con la lógica (`Servicios/`), DTOs (`Dtos/`) y excepciones de negocio |
-| `GestionSaaS.Api`       | Controllers REST. Solo llama a Negocio. Identifica al cliente por `X-Cliente-Id` |
-| `GestionSaaS.View`      | React + Vite, pantalla básica para probar el sistema                          |
+| `GestionSaaS.Api`       | Controllers REST. Solo llama a Negocio. Identifica al cliente mediante token JWT |
+| `GestionSaaS.View`      | React + Vite, interfaz web para operar y probar el sistema                   |
 
 Dependencias: `GestionSaaS.Api → GestionSaaS.Negocio → GestionSaaS.Entidades`. La vista solo habla con la Api por HTTP.
 
